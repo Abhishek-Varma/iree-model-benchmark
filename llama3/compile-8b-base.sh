@@ -2,7 +2,7 @@
 
 # Base llama 8b compilation script. This is intended to be invoked by other scripts.
 # Usage:
-# ./compile-8b-base.sh <iree-compile-path> <gfxip> <data-tiling> <attention_matmul_spec_file> <input mlir> -o <output vmfb> [extra flags]
+# ./compile-8b-base.sh <iree-compile-path> <gfxip> <attention_matmul_spec_file> <input mlir> -o <output vmfb> [extra flags]
 
 set -euo pipefail
 
@@ -14,18 +14,17 @@ if [ ! -f "$IREE_COMPILE" ] ; then
   exit 1
 fi
 readonly USE_TRACY="${USE_TRACY:-0}"
+readonly DATA_TILING="${DATA_TILING:-0}"
 
 readonly CHIP="$2"
 
-readonly DATA_TILING="$3"
-
-readonly INPUT="$(realpath "$4")"
+readonly INPUT="$(realpath "$3")"
 if [ ! -f "$INPUT" ] ; then
   echo "Input mlir file not found: ${INPUT}"
   exit 1
 fi
 
-shift 4
+shift 3
 
 set -x
 
@@ -42,7 +41,7 @@ IREE_COMPILATION_FLAGS="\
 	--iree-hip-specialize-dispatches \
 	--iree-hal-memoization=true"
 
-if (( "${DATA_TILING}" == 1)); then
+if (( "${DATA_TILING}" == "1")); then
 	IREE_COMPILATION_FLAGS+="\
 	--iree-opt-data-tiling=false \
 	--iree-dispatch-creation-data-tiling \
