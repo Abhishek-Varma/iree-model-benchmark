@@ -28,30 +28,33 @@ shift 3
 
 set -x
 
-IREE_COMPILATION_FLAGS="\
-	--iree-hal-target-backends=rocm \
-	--iree-hip-target=$CHIP \
-	--iree-hal-target-device=hip \
-	--iree-opt-level=O3 \
-	--iree-dispatch-creation-propagate-collapse-across-expands=true \
-	--iree-codegen-enable-default-tuning-specs=true \
-	--iree-hip-enable-tensor-ukernels \
-	--iree-hal-indirect-command-buffers=true \
-	--iree-stream-resource-memory-model=discrete \
-	--iree-hip-specialize-dispatches \
-	--iree-hal-memoization=true"
+IREE_COMPILATION_FLAGS=(
+	"--iree-hal-target-backends=rocm"
+	"--iree-hip-target=$CHIP"
+	"--iree-hal-target-device=hip"
+	"--iree-opt-level=O3"
+	"--iree-dispatch-creation-propagate-collapse-across-expands=true"
+	"--iree-codegen-enable-default-tuning-specs=true"
+	"--iree-hip-enable-tensor-ukernels"
+	"--iree-hal-indirect-command-buffers=true"
+	"--iree-stream-resource-memory-model=discrete"
+	"--iree-hip-specialize-dispatches"
+	"--iree-hal-memoization=true"
+	)
 
 if (( "${DATA_TILING}" == "1")); then
-	IREE_COMPILATION_FLAGS+="\
-	--iree-opt-data-tiling=false \
-	--iree-dispatch-creation-data-tiling \
-	--iree-hip-encoding-layout-resolver=data-tiling \
-	--iree-llvmgpu-test-combine-layout-transformation"
+	IREE_COMPILATION_FLAGS+=(
+	"--iree-opt-data-tiling=false"
+	"--iree-dispatch-creation-data-tiling"
+	"--iree-hip-encoding-layout-resolver=data-tiling"
+	"--iree-llvmgpu-test-combine-layout-transformation"
+	)
 fi
 
 if (( "${USE_TRACY}" == "1")); then
-	IREE_COMPILATION_FLAGS+="\
-	--iree-hal-executable-debug-level=3"
+	IREE_COMPILATION_FLAGS+=(
+	"--iree-hal-executable-debug-level=3"
+	)
 fi
 
-"$IREE_COMPILE" "$INPUT" $IREE_COMPILATION_FLAGS "$@"
+"$IREE_COMPILE" "$INPUT" "${IREE_COMPILATION_FLAGS[@]}" "$@"
