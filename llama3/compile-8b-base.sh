@@ -40,20 +40,20 @@ IREE_COMPILATION_FLAGS=(
 	"--iree-stream-resource-memory-model=discrete"
 	"--iree-hip-specialize-dispatches"
 	"--iree-hal-memoization=true"
-	)
+)
 
 if (( "${DATA_TILING}" == "1")); then
 	IREE_COMPILATION_FLAGS+=(
-	"--iree-opt-data-tiling=false"
-	"--iree-dispatch-creation-data-tiling"
-	"--iree-hip-encoding-layout-resolver=data-tiling"
-	"--iree-llvmgpu-test-combine-layout-transformation"
+		"--iree-opt-data-tiling=false"
+		"--iree-dispatch-creation-data-tiling"
+		"--iree-hip-encoding-layout-resolver=data-tiling"
+		"--iree-llvmgpu-test-combine-layout-transformation"
 	)
 fi
 
 if (( "${USE_TRACY}" == "1")); then
 	IREE_COMPILATION_FLAGS+=(
-	"--iree-hal-executable-debug-level=3"
+		"--iree-hal-executable-debug-level=3"
 	)
 fi
 
